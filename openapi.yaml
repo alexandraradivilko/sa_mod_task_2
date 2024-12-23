@@ -1,0 +1,242 @@
+openapi: 3.0.0
+info:
+  title: Sample API
+  description: API для управления исследованиями и участниками с использованием облачных
+    сервисов Yandex Cloud.
+  version: 1.0.0
+servers:
+- url: https://d5dq3jas75lngluat4jm.4b4k4pg5.apigw.yandexcloud.net
+paths:
+  /poema_scibot:
+    post:
+      summary: Инициация взаимодействия с научным ботом
+      description: Обрабатывает запросы для взаимодействия с научным ботом.
+      responses:
+        "200":
+          description: Успешный запрос
+  /initiate_study:
+    post:
+      summary: Создание исследования
+      description: Добавляет новое исследование в базу данных.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/initiate_study_body'
+        required: true
+      responses:
+        "200":
+          description: Исследование успешно создано
+  /study_info/{study_id}:
+    get:
+      summary: Получение информации об исследовании
+      description: Возвращает данные об исследовании по его идентификатору.
+      parameters:
+      - name: study_id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          description: Уникальный идентификатор исследования
+      responses:
+        "200":
+          description: Информация об исследовании
+  /update_study/{study_id}:
+    patch:
+      summary: Обновление информации об исследовании
+      description: Обновляет информацию об исследовании по его идентификатору.
+      parameters:
+      - name: study_id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          description: Уникальный идентификатор исследования
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update_study_study_id_body'
+        required: true
+      responses:
+        "200":
+          description: Информация успешно обновлена
+  /delete_study/{study_id}:
+    delete:
+      summary: Удаление исследования
+      description: Удаляет исследование по его идентификатору.
+      parameters:
+      - name: study_id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          description: Уникальный идентификатор исследования
+      responses:
+        "200":
+          description: Исследование успешно удалено
+  /get_agreement/{study_id}:
+    get:
+      summary: Получение соглашения об участии
+      description: Возвращает файл соглашения для указанного исследования.
+      parameters:
+      - name: study_id
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          description: Уникальный идентификатор исследования
+      responses:
+        "200":
+          description: Файл соглашения успешно получен
+  /initiate_particip:
+    post:
+      summary: Добавление участника в базу
+      description: Создаёт запись об участнике в базе данных.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/initiate_particip_body'
+        required: true
+      responses:
+        "200":
+          description: Участник успешно добавлен
+  /particip_info/{particip_username}:
+    get:
+      summary: Получение информации об участнике
+      description: Возвращает информацию об участнике по его имени пользователя.
+      parameters:
+      - name: particip_username
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          description: Имя пользователя участника
+      responses:
+        "200":
+          description: Информация об участнике успешно получена
+  /update_particip/{particip_username}:
+    patch:
+      summary: Обновление информации об участнике
+      description: Обновляет данные об участнике в базе данных.
+      parameters:
+      - name: particip_username
+        in: path
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+          description: Имя пользователя участника
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/update_particip_particip_username_body'
+        required: true
+      responses:
+        "200":
+          description: Информация об участнике успешно обновлена
+  /analyse_open:
+    post:
+      summary: Анализ открытого ответа
+      description: Анализирует открытый текстовый ответ и возвращает ключевые сущности
+        с их сентиментом.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/analyse_open_body'
+        required: true
+      responses:
+        "200":
+          description: Анализ успешно выполнен
+components:
+  schemas:
+    initiate_study_body:
+      required:
+      - name
+      - study_id
+      type: object
+      properties:
+        study_id:
+          type: string
+          description: Уникальный идентификатор исследования
+        name:
+          type: string
+          description: Название исследования
+    update_study_study_id_body:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Статус исследования
+        participants_ids:
+          type: string
+          description: Список идентификаторов участников
+        name:
+          type: string
+          description: Название исследования
+        description:
+          type: string
+          description: Описание исследования
+        agreement_file:
+          type: string
+          description: Ссылка на файл соглашения
+        completion_tl:
+          type: integer
+          description: Срок завершения
+        prompting_time:
+          type: string
+          description: Время подсказок
+        duration:
+          type: integer
+          description: Продолжительность исследования
+        start_date:
+          type: string
+          description: Дата начала исследования
+        end_date:
+          type: string
+          description: Дата окончания исследования
+    initiate_particip_body:
+      required:
+      - particip_username
+      - status
+      - study_id
+      type: object
+      properties:
+        particip_username:
+          type: string
+          description: Имя пользователя участника
+        study_id:
+          type: string
+          description: Идентификатор исследования
+        status:
+          type: string
+          description: Статус участника
+    update_particip_particip_username_body:
+      type: object
+      properties:
+        study_id:
+          type: string
+          description: Идентификатор исследования
+        status:
+          type: string
+          description: Статус участника
+    analyse_open_body:
+      type: object
+      properties:
+        open_answer:
+          type: string
+          description: Открытый текстовый ответ для анализа
